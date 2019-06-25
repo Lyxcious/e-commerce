@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import ax from '../api/server'
 export default {
   props: {
   },
@@ -36,20 +37,35 @@ export default {
   },
   methods: {
     login () {
-      this.$router.push({ path: '/login'})
+      this.$router.push({ path: '/login' })
+    },
+    register () {
+      ax
+        .post('/user/register')
+        .send(this.newUser)
+        .then(({ data }) => {
+          this.$swal({
+            type: 'success',
+            title: 'Register Success',
+            showConfirmButton: false,
+            timer: 1500
+          })
+        })
+        .catch(err => {
+          this.$swal({
+            type: 'error',
+            title: `${err.response.data.message}`,
+            showConfirmButton: true
+          })
+        })
     }
   }
 }
 </script>
 
 <style scoped>
-  .container{
-    max-width: 100%;
-    margin: 15px 0;
-    height: 700px;
-  }
   .form-user {
-    width: 30%;
+    width: 40%;
     border-color: grey;
     border-width: 2px !important;
     -webkit-box-shadow: 10px 10px 11px -3px rgba(107,107,107,1);

@@ -2,14 +2,14 @@
   <div id="nav">
       <b-navbar variant="faded" type="light">
         <b-navbar-brand tabs href="#" md="auto" class="col-2 brand">
-          <img src="https://www.designfreelogoonline.com/wp-content/uploads/2016/07/000749-online-store-logos-design-free-online-E-commerce-cart-logo-maker-01.png" class="d-inline-block align-top" alt="Logo" width="30" height="30">
+          <img src="../assets/logo.png" class="d-inline-block align-top" alt="Logo" width="30" height="30">
           LovelyCart
         </b-navbar-brand>
         <b-nav tabs align="center" class="col" md="auto">
           <b-nav-item :to="{ path: '/'}" :active='$route.name =="home"'>Home</b-nav-item>
           <b-nav-item :to="{ path: '/cart'}" :active='$route.name =="cart"' v-if="user.email != 'admin@admin.com'">Cart</b-nav-item>
           <b-nav-item :to="{ path: '/product'}" :active='$route.name =="product"' v-else-if="user.email == 'admin@admin.com'">Product</b-nav-item>
-          <b-nav-item disabled :active='$route.name =="detail"' v-if="user.email != 'admin@admin.com'">DetailProduct</b-nav-item>
+          <b-nav-item disabled :active='$route.name =="detail"' v-if="user.email != 'admin@admin.com'">Detail Product</b-nav-item>
         </b-nav>
         <b-nav tabs align="end" class="col-2" md="auto">
           <b-nav-item :to="{ path: '/register'}" v-if="isLogin == false">Register</b-nav-item>
