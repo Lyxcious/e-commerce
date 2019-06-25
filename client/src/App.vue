@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="d-flex flex-column justify-content-between">
     <div>
-      <NavBar :isLogin='isLogin' :user="user"/>
-      <NavBarProduct :product="product" :page="page" v-if="user.email == 'admin@admin.com' && mainPage == 'product'"/>
+      <NavBar :isLogin='isLogin' :user="userLogin" @logout="logout"/>
+      <NavBarProduct :product="product" :page="page" v-if="userLogin.email == 'admin@admin.com'"/>
     </div>
-    <router-view class="flex-grow-1" />
+    <router-view class="flex-grow-1" @loginData="loginData"/>
     <Footer/>
   </div>
 </template>
@@ -21,7 +21,7 @@ export default {
   },
   data () {
     return {
-      user: {
+      userLogin: {
         name: '',
         email: ''
       },
@@ -36,7 +36,18 @@ export default {
         stock: ''
       },
       mainPage: 'product',
-      page: 'edit'
+      page: 'edit',
+      cart: []
+    }
+  },
+  methods: {
+    loginData (user, isLogin) {
+      this.userLogin = user
+      this.isLogin = isLogin
+    },
+    logout (user, isLogin) {
+      this.userLogin = user
+      this.isLogin = isLogin
     }
   }
 }

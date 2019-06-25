@@ -38,4 +38,6 @@ app.use(express.json())
 app.use('/', index)
 app.use(error)
 
-module.exports = app
+app.listen(port, () => {console.log('listening to port', port)})
+
+// module.exports = app

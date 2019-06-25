@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 
 class ProductCont {
   static create(req, res, next) {
+    console.log(req.body)
     let newProduct = {
       name: req.body.name,
       desc: req.body.desc,

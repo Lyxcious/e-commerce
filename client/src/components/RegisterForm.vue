@@ -24,6 +24,7 @@
 <script>
 import ax from '../api/server'
 export default {
+  name: 'RegisterForm',
   props: {
   },
   data () {
@@ -40,18 +41,23 @@ export default {
       this.$router.push({ path: '/login' })
     },
     register () {
-      ax
-        .post('/user/register')
-        .send(this.newUser)
+      ax({
+        method: 'post',
+        url: '/user/register',
+        data: this.newUser
+      })
         .then(({ data }) => {
+          console.log('masuk register')
           this.$swal({
             type: 'success',
             title: 'Register Success',
             showConfirmButton: false,
-            timer: 1500
+            timer: 3000
           })
+          this.$router.push({ path: '/login' })
         })
         .catch(err => {
+          console.log(err.response)
           this.$swal({
             type: 'error',
             title: `${err.response.data.message}`,

@@ -8,7 +8,7 @@
 
 <script>
 export default {
-
+  name: 'Footer'
 }
 </script>
 
@@ -16,7 +16,6 @@ export default {
   .quote {
     border-top: 1px solid rgb(222, 226, 230);
     height: 100%;
-    margin: 0 30px;
     padding-top: 15px;
   }
 </style>
