@@ -6,6 +6,7 @@ class ProductCont {
     let newProduct = {
       name: req.body.name,
       desc: req.body.desc,
+      image: req.body.image,
       price: req.body.price,
       stock: req.body.stock
     }
@@ -155,6 +156,8 @@ class ProductCont {
               product.desc = req.body.desc
               product.price = req.body.price
               product.stock = req.body.stock
+              product.image = req.body.image
+
               let updatedProduct = product
               product.save()
                 .then(() => {
