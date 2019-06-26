@@ -3,13 +3,16 @@ var mongoose = require('mongoose');
 
 class ProductCont {
   static create(req, res, next) {
-    console.log(req.body)
     let newProduct = {
       name: req.body.name,
       desc: req.body.desc,
-      image: req.body.image,
-      price: req.body.price,
-      stock: req.body.stock
+      price: parseInt(req.body.price),
+      stock: parseInt(req.body.stock)
+    }
+    if (req.file) {
+      newProduct.image = req.file.gcsUrl
+    } else {
+      newProduct.image = req.body.image
     }
     if (!newProduct.name || newProduct.name.length == 0) {
       next({
@@ -129,9 +132,8 @@ class ProductCont {
           message: err.message
         })
       } else {
-        console.log(product)
         if (product) {
-          if (typeof req.body.price !== "number") {
+          if (typeof parseInt(req.body.price) !== "number") {
             next({
               code: 400,
               message: 'Product price must be a number!'
@@ -142,7 +144,7 @@ class ProductCont {
               message: 'Product price must be a positive number!'
             })
           } else {
-            if (typeof req.body.stock !== "number") {
+            if (typeof parseInt(req.body.stock) !== "number") {
               next({
                 code: 400,
                 message: 'Product stock must be a number!'
@@ -155,9 +157,11 @@ class ProductCont {
             } else {
               product.name = req.body.name
               product.desc = req.body.desc
-              product.price = req.body.price
-              product.stock = req.body.stock
-              product.image = req.body.image
+              product.price = parseInt(req.body.price)
+              product.stock = parseInt(req.body.stock)
+              if (req.file) {
+                product.image = req.file.gcsUrl
+              } 
 
               let updatedProduct = product
               product.save()
@@ -182,7 +186,6 @@ class ProductCont {
         _id: req.params.id
       })
       .then(product => {
-        console.log(product)
         if (product) {
           return Product.deleteOne({
             _id: req.params.id
@@ -195,7 +198,6 @@ class ProductCont {
         }
       })
       .then(result => {
-        console.log(result)
         res.status(200).json(result)
       })
       .catch(next)

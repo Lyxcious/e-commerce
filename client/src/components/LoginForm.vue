@@ -59,13 +59,13 @@ export default {
         data: this.user
       })
         .then(({ data }) => {
-          console.log('masuk login')
           this.userLogin.name = data.name
           this.userLogin.email = data.email
           this.isLogin = true
           this.$emit('loginData', this.userLogin, this.isLogin)
-          localStorage.setItem('token', data.token)
+          localStorage.setItem('token', data.access_token)
           localStorage.setItem('name', data.name)
+          localStorage.setItem('email', data.email)
           this.$swal({
             type: 'success',
             title: 'Login Success!',
@@ -97,8 +97,9 @@ export default {
           this.userLogin.email = data.email
           this.isLogin = true
           this.$emit('loginData', this.userLogin, this.isLogin)
-          localStorage.setItem('token', data.token)
+          localStorage.setItem('token', data.access_token)
           localStorage.setItem('name', data.name)
+          localStorage.setItem('email', data.email)
           this.$swal({
             type: 'success',
             title: 'Login Success!',

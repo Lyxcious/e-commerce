@@ -1,17 +1,58 @@
 <template>
   <div class="home">
-    <ProductFilter class="form"/>
-    <ProductList/>
+    <ProductFilter :sort="sort" :nameFilter="nameFilter" class="form" @getAll="getAll" @sortPrice="sortPrice"/>
+    <ProductList :products="products" :user="user"/>
   </div>
 </template>
 
 <script>
+import ax from '../api/server'
 import ProductFilter from '../components/ProductFilter'
 import ProductList from '../components/ProductList'
 export default {
   components: {
     ProductFilter,
     ProductList
+  },
+  props: {
+    user: Object
+  },
+  data () {
+    return {
+      products: [],
+      sort: '',
+      nameFilter: ''
+    }
+  },
+  created () {
+    let products = []
+    ax({
+      method: 'get',
+      url: '/product/list',
+      headers: { access_token: localStorage.getItem('token') }
+    })
+      .then(({ data }) => {
+        for (let i in data) {
+          products.push(data[i])
+        }
+        this.products = products
+      })
+      .catch((err) => {
+        this.$swal({
+          type: 'error',
+          title: `${err.response.data.message}`,
+          showConfirmButton: true
+        })
+      })
+  },
+  methods: {
+    getAll (products) {
+      this.products = products
+    },
+    sortPrice (products, sortUpdate) {
+      this.products = products
+      this.sort = sortUpdate
+    }
   }
 }
 </script>

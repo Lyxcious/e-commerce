@@ -2,9 +2,9 @@
   <div id="app" class="d-flex flex-column justify-content-between">
     <div>
       <NavBar :isLogin='isLogin' :user="userLogin" @logout="logout"/>
-      <NavBarProduct :product="product" :page="page" v-if="userLogin.email == 'admin@admin.com'"/>
+      <NavBarProduct :product="product" v-if="userLogin.email == 'admin@admin.com' && ($route.name == 'product-edit' || $route.name == 'product-add' || $route.name == 'product')"/>
     </div>
-    <router-view class="flex-grow-1" @loginData="loginData"/>
+    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin"/>
     <Footer/>
   </div>
 </template>
@@ -36,11 +36,20 @@ export default {
         stock: ''
       },
       mainPage: 'product',
-      page: 'edit',
       cart: []
     }
   },
+  mounted () {
+    this.checkLogin()
+  },
   methods: {
+    checkLogin () {
+      if (localStorage.getItem('token')) {
+        this.userLogin.name = localStorage.getItem('name')
+        this.userLogin.email = localStorage.getItem('email')
+        this.isLogin = true
+      }
+    },
     loginData (user, isLogin) {
       this.userLogin = user
       this.isLogin = isLogin

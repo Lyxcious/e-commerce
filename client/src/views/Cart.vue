@@ -12,17 +12,12 @@
 import CartList from '../components/CartList'
 export default {
   props: {
-    isLogin: String
   },
   components: {
     CartList
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      if (vm.isLogin) {
-        next()
-      }
-    })
+  methods: {
+
   }
 }
 </script>

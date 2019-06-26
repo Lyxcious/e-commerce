@@ -6,15 +6,15 @@
           LovelyCart
         </b-navbar-brand>
         <b-nav tabs align="center" class="col" md="auto">
-          <b-nav-item :to="{ path: '/'}" :active='$route.name =="home"'><i class="fas fa-home"></i>Home</b-nav-item>
-          <b-nav-item :to="{ path: '/cart'}" :active='$route.name =="cart"' v-if="user.email != 'admin@admin.com'"><i class="fas fa-shopping-cart"></i>Cart</b-nav-item>
-          <b-nav-item :to="{ path: '/product'}" :active='$route.name =="product"' v-else-if="user.email == 'admin@admin.com'">Product</b-nav-item>
+          <b-nav-item :to="{ path: '/'}" :active='$route.name =="home"' ><i class="fas fa-home"></i> Home</b-nav-item>
+          <b-nav-item :to="{ path: '/cart'}" :active='$route.name =="cart"' v-if="user.email != 'admin@admin.com'"><i class="fas fa-shopping-cart"></i> Cart</b-nav-item>
+          <b-nav-item :to="{ path: '/product/add'}" :active='$route.name =="product" || $route.name == "product-add" || $route.name == "product-edit"' v-else>Product</b-nav-item>
         </b-nav>
         <b-nav tabs align="end" class="col-2" md="auto">
           <b-nav-item :to="{ path: '/register'}" v-if="isLogin == false">Register</b-nav-item>
           <b-nav-item :to="{ path: '/login'}" v-if="isLogin == false">Login</b-nav-item>
           <b-nav-item disable v-if="isLogin == true">{{user.name}}</b-nav-item>
-          <b-nav-item :to="{ path: '/login'}" v-if="isLogin == true" @click="logout">Logout</b-nav-item>
+          <b-nav-item v-if="isLogin == true" @click="logout" :to="{ path: '/login'}">Logout</b-nav-item>
         </b-nav>
       </b-navbar>
   </div>
@@ -48,9 +48,8 @@ export default {
         showConfirmButton: false,
         timer: 3000
       })
-      localStorage.removeItem('token')
-      localStorage.removeItem('name')
-      this.$emit('logout', this.resetUser, this.email)
+      localStorage.clear()
+      this.$emit('logout', this.resetUser, this.login)
     }
   }
 }
