@@ -49,6 +49,9 @@ export default {
     },
     editProduct (id) {
       this.$router.push({ path: `/product/edit/${id}` })
+    },
+    addToCart (id) {
+      this.$emit('addToCart', id)
     }
   }
 }

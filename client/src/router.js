@@ -34,7 +34,7 @@ export default new Router({
       name: 'cart',
       component: Cart,
       beforeEnter (to, from, next) {
-        if (localStorage.getItem('access_token')) {
+        if (localStorage.getItem('token')) {
           next()
         } else {
           next({ path: '/login' })

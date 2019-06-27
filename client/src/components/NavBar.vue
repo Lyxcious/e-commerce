@@ -14,7 +14,7 @@
           <b-nav-item :to="{ path: '/register'}" v-if="isLogin == false">Register</b-nav-item>
           <b-nav-item :to="{ path: '/login'}" v-if="isLogin == false">Login</b-nav-item>
           <b-nav-item disable v-if="isLogin == true">{{user.name}}</b-nav-item>
-          <b-nav-item v-if="isLogin == true" @click="logout" :to="{ path: '/login'}">Logout</b-nav-item>
+          <b-nav-item :to="{ path: '/login'}" v-if="isLogin == true" @click="logout">Logout</b-nav-item>
         </b-nav>
       </b-navbar>
   </div>

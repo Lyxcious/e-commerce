@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <ProductFilter :sort="sort" :nameFilter="nameFilter" class="form" @getAll="getAll" @sortPrice="sortPrice"/>
-    <ProductList :products="products" :user="user"/>
+    <ProductFilter :sort="sort" :nameFilter="nameFilter" class="form" @getAll="getAll" @sortPrice="sortPrice" @filterByName="filterByName"/>
+    <ProductList :products="products" :user="user" @addToCart="addToCart"/>
   </div>
 </template>
 
@@ -52,6 +52,12 @@ export default {
     sortPrice (products, sortUpdate) {
       this.products = products
       this.sort = sortUpdate
+    },
+    filterByName (products) {
+      this.products = products
+    },
+    addToCart (id) {
+      this.$emit('addToCart', id)
     }
   }
 }

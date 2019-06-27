@@ -1,31 +1,31 @@
 <template>
-  <div>
-    <b-card-group deck>
-      <b-card :title="product.name" :img-src="product.image" :img-alt="product.name" img-top class="mb-2" v-for="(product, index) in productsCart" :key="product.id">
-        <b-card-text>
-          {{product.desc}} aaaaaaaaa
-        </b-card-text>
-        <b-card-text>
-          Price: Rp {{formating(product.price)}}aaaaaaaaaaaaaaaa
-        </b-card-text>
-        <b-card-text>
-          <input type="number" min="0" :max="product.stock" v-model="cart.quantity[index]">
-        </b-card-text>
-        <b-card-text>
-          <div>Total: Rp. {{formating(getTotal(quantity[index], product.price))}}</div>
-        </b-card-text>
-        <div>
-          <b-button href="#" variant="danger" @click="deleteItem(index)">Delete</b-button>
-        </div>
-      </b-card>
-    </b-card-group>
-  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Price</th>
+        <th scope="col"></th>
+        <th scope="col">Quantity</th>
+        <th scope="col"></th>
+        <th scope="col">Total</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ProductCart v-for="(product, index) in cart.products" :index="index" :key="product._id" @updateCart="updateCart" :product="product" :quantity="carts.quantity[index]" :totalPrice="carts.totalPrice[index]" @removeCart="removeCart"/>
+    </tbody>
+  </table>
 </template>
 
 <script>
+import ProductCart from './ProductCart'
 export default {
+  components: {
+    ProductCart
+  },
   props: {
-    products: Array
+    cart: Object
   },
   data () {
     return {
@@ -36,14 +36,21 @@ export default {
       }
     }
   },
-  computed: {
-    getTotal (quantity, price) {
-      return quantity * price
-    }
+  created () {
+    this.carts = this.cart
   },
   methods: {
-    deleteItem () {
-
+    updateCart (cart, i) {
+      this.carts.products[i] = cart.product
+      this.carts.quantity[i] = cart.quantity
+      this.carts.totalPrice[i] = cart.totalPrice
+      this.$emit('updateCart', this.carts)
+    },
+    removeCart (i) {
+      this.carts.products.splice(i, 1)
+      this.carts.quantity.splice(i, 1)
+      this.carts.totalPrice.splice(i, 1)
+      this.$emit('updateCart', this.carts)
     }
   }
 }

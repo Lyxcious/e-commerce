@@ -4,7 +4,7 @@
       <NavBar :isLogin='isLogin' :user="userLogin" @logout="logout"/>
       <NavBarProduct :product="product" v-if="userLogin.email == 'admin@admin.com' && ($route.name == 'product-edit' || $route.name == 'product-add' || $route.name == 'product')"/>
     </div>
-    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin"/>
+    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin" @addToCart="addToCart" :cart="cart" @updateCart="updateCart"/>
     <Footer/>
   </div>
 </template>
@@ -57,6 +57,33 @@ export default {
     logout (user, isLogin) {
       this.userLogin = user
       this.isLogin = isLogin
+    },
+    addToCart (id) {
+      let found = false
+      for (let i in this.cart) {
+        if (this.cart[i] === id) {
+          found = true
+        }
+      }
+      if (!found) {
+        this.cart.push(id)
+        this.$swal({
+          type: 'success',
+          title: 'Product added to Cart!',
+          showConfirmButton: false,
+          timer: 3000
+        })
+      } else {
+        this.$swal({
+          type: 'error',
+          title: 'Product already at Cart!',
+          showConfirmButton: false,
+          timer: 3000
+        })
+      }
+    },
+    updateCart (productIds) {
+      this.cart = productIds
     }
   }
 }

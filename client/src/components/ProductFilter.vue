@@ -88,8 +88,29 @@ export default {
           })
         })
     },
-    filterByName () {
-
+    filterByName (name) {
+      this.products = []
+      let regex = new RegExp('(' + name + ')', 'i')
+      ax({
+        method: 'get',
+        url: '/product/list',
+        headers: { access_token: localStorage.getItem('token') }
+      })
+        .then(({ data }) => {
+          for (let i in data) {
+            if (regex.test(data[i].name)) {
+              this.products.push(data[i])
+            }
+          }
+          this.$emit('filterByName', this.products)
+        })
+        .catch((err) => {
+          this.$swal({
+            type: 'error',
+            title: `${err.response.data.message}`,
+            showConfirmButton: true
+          })
+        })
     }
   }
 }
