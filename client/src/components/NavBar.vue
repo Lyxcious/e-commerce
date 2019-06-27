@@ -14,7 +14,7 @@
           <b-nav-item :to="{ path: '/register'}" v-if="isLogin == false">Register</b-nav-item>
           <b-nav-item :to="{ path: '/login'}" v-if="isLogin == false">Login</b-nav-item>
           <b-nav-item disable v-if="isLogin == true">{{user.name}}</b-nav-item>
-          <b-nav-item :to="{ path: '/login'}" v-if="isLogin == true" @click="logout">Logout</b-nav-item>
+          <b-nav-item v-if="isLogin == true"><a href="/login"  @click="logout" class="disableHover">Logout</a></b-nav-item>
         </b-nav>
       </b-navbar>
   </div>
@@ -38,17 +38,17 @@ export default {
   },
   methods: {
     logout () {
-      var auth2 = gapi.auth2.getAuthInstance()
-      auth2.signOut().then(function () {
-        console.log('User signed out.')
-      })
+      localStorage.clear()
       this.$swal({
         type: 'success',
         title: 'Logout Success! See you soon',
         showConfirmButton: false,
         timer: 3000
       })
-      localStorage.clear()
+      var auth2 = gapi.auth2.getAuthInstance()
+      auth2.signOut().then(function () {
+        console.log('User signed out.')
+      })
       this.$emit('logout', this.resetUser, this.login)
     }
   }
@@ -64,5 +64,8 @@ export default {
     margin: 0;
     text-align: start;
     border-bottom: 1px solid rgb(222, 226, 230);
+  }
+  .disableHover:hover {
+    text-decoration: none;
   }
 </style>

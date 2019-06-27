@@ -12,7 +12,6 @@ class CartCont {
     }
     Cart.findOne({user: newCart.user, statusCheckOut: false})
       .then(cart => {
-        console.log(cart)
         if (cart){
           next({code: 400, message: 'User already have an empty cart'})
         } else {
@@ -115,6 +114,7 @@ class CartCont {
   }
 
   static checkout(req, res, next) {
+    let checkoutCart
     Cart.findById(req.params.id)
     .populate({
       path: 'user',
@@ -143,7 +143,6 @@ class CartCont {
                   found = true
                 }
               }
-              console.log(found)
               if (found) {
                 throw next ({code: 400, message: `Product quantity can't exceeded stock`})
               } else {
@@ -163,7 +162,23 @@ class CartCont {
               }
             })
             .then(cart => {
-              res.status(200).json(cart)
+              checkoutCart = cart
+              let promise = []
+              for (let i in cart.products) {
+                promise.push(Product.findById(cart.products[i]))
+              }
+              return Promise.all(promise)
+            })
+            .then(data => {
+              let promise = []
+              for (let i in data) {
+                data[i].stock -= checkoutCart.quantity[i]
+                promise.push(data[i].save())
+              }
+              return Promise.all(promise)
+            })
+            .then(data => {
+              res.status(200).json(checkoutCart)
             })
             .catch(next) 
           }

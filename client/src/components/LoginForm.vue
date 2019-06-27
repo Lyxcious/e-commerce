@@ -73,7 +73,32 @@ export default {
             showConfirmButton: false,
             timer: 3000
           })
-          this.$router.push({ path: '/' })
+          ax({
+            method: 'post',
+            url: 'cart/create',
+            headers: { access_token: data.access_token }
+          })
+            .then(({ data }) => {
+              localStorage.setItem('cart', data._id)
+              this.$router.push({ path: '/' })
+            })
+            .catch(err => {
+              console.log(err)
+              if (err.response) {
+                ax({
+                  method: 'get',
+                  url: 'cart/detail',
+                  headers: { access_token: localStorage.getItem('token') }
+                })
+                  .then(({ data }) => {
+                    localStorage.setItem('cart', data._id)
+                    this.$router.push({ path: '/' })
+                  })
+                  .catch(err => {
+                    console.log(err)
+                  })
+              }
+            })
         })
         .catch(err => {
           this.$swal({
@@ -84,38 +109,65 @@ export default {
         })
     },
     onSignIn (googleUser) {
-      var idToken = googleUser.getAuthResponse().id_token
-      let token = idToken
-      ax({
-        method: 'post',
-        url: '/user/signingoogle',
-        data: { token }
-      })
-        .then(({ data }) => {
-          console.log('masuk login google')
-          this.userLogin.name = data.name
-          this.userLogin.email = data.email
-          this.isLogin = true
-          this.$emit('loginData', this.userLogin, this.isLogin)
-          localStorage.setItem('token', data.access_token)
-          localStorage.setItem('name', data.name)
-          localStorage.setItem('email', data.email)
-          this.$swal({
-            type: 'success',
-            title: 'Login Success!',
-            text: 'Welcome to LovelyCart',
-            showConfirmButton: false,
-            timer: 3000
-          })
-          this.$router.push({ path: '/' })
+      if (!localStorage.getItem('token')) {
+        var idToken = googleUser.getAuthResponse().id_token
+        let token = idToken
+        ax({
+          method: 'post',
+          url: '/user/signingoogle',
+          data: { token }
         })
-        .catch((err) => {
-          this.$swal({
-            type: 'error',
-            title: `${err.response.data.message}`,
-            showConfirmButton: true
+          .then(({ data }) => {
+            console.log('masuk login google')
+            this.userLogin.name = data.name
+            this.userLogin.email = data.email
+            this.isLogin = true
+            this.$emit('loginData', this.userLogin, this.isLogin)
+            localStorage.setItem('token', data.access_token)
+            localStorage.setItem('name', data.name)
+            localStorage.setItem('email', data.email)
+            this.$swal({
+              type: 'success',
+              title: 'Login Success!',
+              text: 'Welcome to LovelyCart',
+              showConfirmButton: false,
+              timer: 3000
+            })
+            ax({
+              method: 'post',
+              url: 'cart/create',
+              headers: { access_token: data.access_token }
+            })
+              .then(({ data }) => {
+                localStorage.setItem('cart', data._id)
+                this.$router.push({ path: '/' })
+              })
+              .catch(err => {
+                console.log(err)
+                if (err.response) {
+                  ax({
+                    method: 'get',
+                    url: 'cart/detail',
+                    headers: { access_token: localStorage.getItem('token') }
+                  })
+                    .then(({ data }) => {
+                      localStorage.setItem('cart', data._id)
+                      this.$router.push({ path: '/' })
+                    })
+                    .catch(err => {
+                      console.log(err)
+                    })
+                }
+              })
           })
-        })
+          .catch((err) => {
+            this.$swal({
+              type: 'error',
+              title: `${err.response.data.message}`,
+              showConfirmButton: true
+            })
+          })
+      }
     }
   }
 }

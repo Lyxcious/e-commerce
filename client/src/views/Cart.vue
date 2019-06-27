@@ -1,9 +1,9 @@
 <template>
   <div class="cart d-flex flex-column justify-content-between">
-    <CartList style="overflow-y: scroll" :cart="carts" @updateCart="updateCart"/>
+    <CartList style="overflow-y: scroll" :cart="carts"/>
     <div>
       <hr/>
-      <b-button variant="success" @click="checkOut">Check Out</b-button>
+      <b-button href="/" variant="success" @click="checkOut">Check Out</b-button>
     </div>
   </div>
 </template>
@@ -13,7 +13,6 @@ import ax from '../api/server'
 import CartList from '../components/CartList'
 export default {
   props: {
-    cart: Array
   },
   components: {
     CartList
@@ -29,35 +28,23 @@ export default {
     }
   },
   created () {
-    for (let i in this.cart) {
-      this.carts.quantity.push(0)
-      this.carts.totalPrice.push(0)
-      ax({
-        method: 'get',
-        url: `/product/detail/${this.cart[i]}`,
-        headers: { access_token: localStorage.getItem('token') }
+    ax({
+      method: 'get',
+      url: `/cart/detail`,
+      headers: { access_token: localStorage.getItem('token') }
+    })
+      .then(({ data }) => {
+        this.carts.products = data.products
+        this.carts.quantity = data.quantity
+        data.products.forEach(() => {
+          this.carts.totalPrice.push(0)
+        })
       })
-        .then(({ data }) => {
-          this.carts.products.push(data)
-        })
-        .catch(err => {
-          this.$swal({
-            type: 'error',
-            title: `${err.response.data.message}`,
-            showConfirmButton: true
-          })
-        })
-    }
+      .catch(err => {
+        console.log(err)
+      })
   },
   methods: {
-    updateCart (cart) {
-      this.carts = cart
-      let productIds = []
-      for (let i in cart.products) {
-        productIds.push(cart.products[i]._id)
-      }
-      this.$emit('updateCart', productIds)
-    },
     formating (num) {
       num = String(num)
       let output1 = ''
@@ -81,12 +68,41 @@ export default {
       for (let i in this.carts.totalPrice) {
         this.totalSpent += this.carts.totalPrice[i]
       }
-      this.$swal({
-        type: 'success',
-        title: 'Thank You for Your Purchase',
-        text: `You spent: Rp ${this.formating(this.totalSpent)}`,
-        showConfirmButton: true
-      })
+      if (this.totalSpent !== 0) {
+        this.$swal({
+          type: 'success',
+          title: 'Thank You for Your Purchase',
+          text: `You spent: Rp ${this.formating(this.totalSpent)}`,
+          showConfirmButton: true
+        })
+        let productId = []
+        this.carts.products.forEach(product => {
+          productId.push(product._id)
+        })
+        ax({
+          method: 'patch',
+          url: `cart/checkout/${localStorage.getItem('cart')}`,
+          data: {
+            products: productId,
+            quantity: this.carts.quantity
+          },
+          headers: { access_token: localStorage.getItem('token') }
+        })
+          .then(({ data }) => {
+            localStorage.removeItem('cart')
+            return ax({
+              method: 'post',
+              url: 'cart/create',
+              headers: { access_token: data.access_token }
+            })
+          })
+          .then(data => {
+            localStorage.setItem('cart', data._id)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
     }
   }
 }

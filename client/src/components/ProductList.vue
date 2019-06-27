@@ -8,8 +8,11 @@
         <b-card-text>
           Price: Rp {{formating(product.price)}}
         </b-card-text>
-        <b-card-text>
+        <b-card-text v-if="product.stock > 0">
           Stock: {{product.stock}}
+        </b-card-text>
+        <b-card-text v-else>
+          Stock: Habis
         </b-card-text>
         <div slot="footer" class="text-center">
           <b-button href="#" variant="primary" v-if="user.email != 'admin@admin.com'" @click="addToCart(product._id)">Add to Cart</b-button>

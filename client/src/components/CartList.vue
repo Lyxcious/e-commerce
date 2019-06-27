@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import ax from '@/api/server.js'
 import ProductCart from './ProductCart'
 export default {
   components: {
@@ -44,13 +45,49 @@ export default {
       this.carts.products[i] = cart.product
       this.carts.quantity[i] = cart.quantity
       this.carts.totalPrice[i] = cart.totalPrice
-      this.$emit('updateCart', this.carts)
+      let productId = []
+      this.carts.products.forEach(product => {
+        productId.push(product._id)
+      })
+      ax({
+        method: 'patch',
+        url: `cart/update/${localStorage.getItem('cart')}`,
+        data: {
+          products: productId,
+          quantity: this.carts.quantity
+        },
+        headers: { access_token: localStorage.getItem('token') }
+      })
+        .then(({ data }) => {
+          console.log('update cart')
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     removeCart (i) {
       this.carts.products.splice(i, 1)
       this.carts.quantity.splice(i, 1)
       this.carts.totalPrice.splice(i, 1)
-      this.$emit('updateCart', this.carts)
+      let productId = []
+      this.carts.products.forEach(product => {
+        productId.push(product._id)
+      })
+      ax({
+        method: 'patch',
+        url: `cart/update/${localStorage.getItem('cart')}`,
+        data: {
+          products: productId,
+          quantity: this.carts.quantity
+        },
+        headers: { access_token: localStorage.getItem('token') }
+      })
+        .then(({ data }) => {
+          console.log('update cart')
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }

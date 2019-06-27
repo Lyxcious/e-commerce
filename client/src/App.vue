@@ -4,7 +4,7 @@
       <NavBar :isLogin='isLogin' :user="userLogin" @logout="logout"/>
       <NavBarProduct :product="product" v-if="userLogin.email == 'admin@admin.com' && ($route.name == 'product-edit' || $route.name == 'product-add' || $route.name == 'product')"/>
     </div>
-    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin" @addToCart="addToCart" :cart="cart" @updateCart="updateCart"/>
+    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin" @addToCart="addToCart" @updateCart="updateCart"/>
     <Footer/>
   </div>
 </template>
@@ -13,6 +13,7 @@
 import NavBar from './components/NavBar'
 import NavBarProduct from './components/NavBarProduct'
 import Footer from './components/Footer'
+import ax from './api/server'
 export default {
   components: {
     NavBar,
@@ -36,11 +37,43 @@ export default {
         stock: ''
       },
       mainPage: 'product',
-      cart: []
+      cartProduct: [],
+      cartProductQ: []
     }
   },
   mounted () {
     this.checkLogin()
+    if (localStorage.getItem('token')) {
+      ax({
+        method: 'get',
+        url: 'cart/detail',
+        headers: { access_token: localStorage.getItem('token') }
+      })
+        .then(({ data }) => {
+          localStorage.setItem('cart', data._id)
+          this.cartProduct = []
+          this.cartProductQ = []
+          for (let i in data.products) {
+            this.cartProduct.push(data.products[i]._id)
+            this.cartProductQ.push(data.quantity[i])
+          }
+        })
+        .catch(err => {
+          if (err.response) {
+            ax({
+              method: 'post',
+              url: 'cart/create',
+              headers: { access_token: localStorage.getItem('token') }
+            })
+              .then(({ data }) => {
+                localStorage.setItem('cart', data._id)
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        })
+    }
   },
   methods: {
     checkLogin () {
@@ -60,19 +93,45 @@ export default {
     },
     addToCart (id) {
       let found = false
-      for (let i in this.cart) {
-        if (this.cart[i] === id) {
+      for (let i in this.cartProduct) {
+        if (this.cartProduct[i] === id) {
           found = true
         }
       }
       if (!found) {
-        this.cart.push(id)
-        this.$swal({
-          type: 'success',
-          title: 'Product added to Cart!',
-          showConfirmButton: false,
-          timer: 3000
+        this.cartProduct.push(id)
+        this.cartProductQ.push(0)
+        console.log({
+          products: [...this.cartProduct],
+          quantity: [...this.cartProductQ]
         })
+        ax({
+          method: 'patch',
+          url: `cart/update/${localStorage.getItem('cart')}`,
+          data: {
+            products: [...this.cartProduct],
+            quantity: [...this.cartProductQ]
+          },
+          headers: { access_token: localStorage.getItem('token') }
+        })
+          .then(({ data }) => {
+            console.log(data)
+            localStorage.setItem('cart', data._id)
+            this.cartProduct = []
+            for (let i in data.products) {
+              this.cartProduct.push(data.products[i])
+            }
+            console.log(this.cartProduct)
+            this.$swal({
+              type: 'success',
+              title: 'Product added to Cart!',
+              showConfirmButton: false,
+              timer: 3000
+            })
+          })
+          .catch(err => {
+            console.log(err)
+          })
       } else {
         this.$swal({
           type: 'error',
