@@ -45,11 +45,13 @@ export default {
         showConfirmButton: false,
         timer: 3000
       })
-      var auth2 = gapi.auth2.getAuthInstance()
-      auth2.signOut().then(function () {
-        console.log('User signed out.')
-      })
-      this.$emit('logout', this.resetUser, this.login)
+      setTimeout(() => {
+        var auth2 = gapi.auth2.getAuthInstance()
+        auth2.signOut().then(function () {
+          console.log('User signed out.')
+        })
+        this.$emit('logout', this.resetUser, this.login)
+      }, 1000)
     }
   }
 }

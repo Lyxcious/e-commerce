@@ -44,6 +44,9 @@ export default {
   mounted () {
     this.checkLogin()
     if (localStorage.getItem('token')) {
+      // gapi.load('auth2', function(){
+      //   console.log("ready to use auth2")
+      // })
       ax({
         method: 'get',
         url: 'cart/detail',
