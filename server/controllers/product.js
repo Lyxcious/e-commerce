@@ -1,4 +1,7 @@
 const Product = require('../models/product')
+const {
+  Storage
+} = require('@google-cloud/storage');
 var mongoose = require('mongoose');
 
 class ProductCont {
@@ -53,10 +56,10 @@ class ProductCont {
           })
         }
         Product.create(newProduct)
-        .then(product => {
-          res.status(201).json(product)
-        })
-        .catch(next)
+          .then(product => {
+            res.status(201).json(product)
+          })
+          .catch(next)
       }
     }
   }
@@ -159,9 +162,32 @@ class ProductCont {
               product.desc = req.body.desc
               product.price = parseInt(req.body.price)
               product.stock = parseInt(req.body.stock)
+              const GOOGLE_CLOUD_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID; // Replace with your project ID
+              const GOOGLE_CLOUD_KEYFILE = process.env.GOOGLE_CLOUD_KEYFILE; // Replace with the path to the downloaded private key
+
+              const storage = new Storage({
+                projectId: GOOGLE_CLOUD_PROJECT_ID,
+                keyFilename: GOOGLE_CLOUD_KEYFILE,
+              });
+
+              const bucketName = process.env.DEFAULT_BUCKET_NAME;
               if (req.file) {
+                let deleteFile = product.image
+                console.log(deleteFile)
+
                 product.image = req.file.gcsUrl
-              } 
+                if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+                  let filename = deleteFile.replace(/(https:\/\/storage.googleapis.com\/my-e-commerce-storage\/)/, '')
+                }
+                console.log(filename)
+                console.log(bucketName)
+                storage
+                  .bucket(bucketName)
+                  .file(filename)
+                  .delete();
+
+                console.log(`gs://${bucketName}/${filename} deleted.`);
+              }
 
               let updatedProduct = product
               product.save()

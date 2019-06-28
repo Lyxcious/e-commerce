@@ -197,7 +197,7 @@ describe('Testing Product Server Endpoint', function () {
             })
         })
       })
-      describe('Fail create product with price input a boolean', function () {
+      describe('Fail create product with price input not number type', function () {
         it('Should return an error with status code 400 and message: "Product price must be a number!"', function (done) {
           chai
             .request(app)
@@ -273,7 +273,7 @@ describe('Testing Product Server Endpoint', function () {
             })
         })
       })
-      describe('Fail create product with stock input a boolean', function () {
+      describe('Fail create product with stock input not number type', function () {
         it('Should return an error with status code 400 and message: "Product stock must be a number!"', function (done) {
           chai
             .request(app)
@@ -522,7 +522,7 @@ describe('Testing Product Server Endpoint', function () {
             })
         })
       })
-      describe('Fail update product detail with updated price input a boolean', function () {
+      describe('Fail update product detail with updated price input not number type', function () {
         it('Should return an error with status code 400 and message: "Product price must be a number!"', function (done) {
           chai
             .request(app)
@@ -566,7 +566,7 @@ describe('Testing Product Server Endpoint', function () {
             })
         })
       })
-      describe('Fail update product detail with updated stock input a boolean', function () {
+      describe('Fail update product detail with updated stock input not number type', function () {
         it('Should return an error with status code 400 and message: "Product stock must be a number!"', function (done) {
           chai
             .request(app)
