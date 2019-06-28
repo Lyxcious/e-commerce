@@ -188,15 +188,15 @@ class ProductCont {
                   product.image = req.file.gcsUrl
                   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
                     let filename = deleteFile.replace(/(https:\/\/storage.googleapis.com\/my-e-commerce-storage\/)/, '')
+                    console.log(filename)
+                    console.log(bucketName)
+                    storage
+                      .bucket(bucketName)
+                      .file(filename)
+                      .delete();
+    
+                    console.log(`gs://${bucketName}/${filename} deleted.`);
                   }
-                  console.log(filename)
-                  console.log(bucketName)
-                  storage
-                    .bucket(bucketName)
-                    .file(filename)
-                    .delete();
-  
-                  console.log(`gs://${bucketName}/${filename} deleted.`);
                 }
   
                 let updatedProduct = product

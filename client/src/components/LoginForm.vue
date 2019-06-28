@@ -2,7 +2,7 @@
  <form class="form-user center p-3 border border-secondary rounded" id="login-form" @submit.prevent="login">
     <div class="form-group">
       <label>Email address</label>
-      <input type="email" class="form-control" v-model="user.email" aria-describedby="emailHelp" placeholder="Enter email" required>
+      <input type="email" class="form-control" v-model="user.email" aria-describedby="emailHelp" placeholder="Email" required>
     </div>
     <div class="form-group">
       <label>Password</label>

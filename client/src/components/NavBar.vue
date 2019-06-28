@@ -46,9 +46,12 @@ export default {
         timer: 3000
       })
       setTimeout(() => {
-        var auth2 = gapi.auth2.getAuthInstance()
-        auth2.signOut().then(function () {
-          console.log('User signed out.')
+        gapi.load('auth2', function () {
+          console.log('ready to use auth2')
+          var auth2 = gapi.auth2.getAuthInstance()
+          auth2.signOut().then(function () {
+            console.log('User signed out.')
+          })
         })
         this.$emit('logout', this.resetUser, this.login)
       }, 1000)

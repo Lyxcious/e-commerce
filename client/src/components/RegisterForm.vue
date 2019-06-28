@@ -2,11 +2,11 @@
   <form class="form-user center border border-secondary p-3 rounded" @submit.prevent="register">
     <div class="form-group">
       <label>Name</label>
-      <input type="text" class="form-control" v-model="newUser.name" placeholder="Enter name" required>
+      <input type="text" class="form-control" v-model="newUser.name" placeholder="Name" required>
     </div>
     <div class="form-group">
       <label>Email address</label>
-      <input type="email" class="form-control" v-model="newUser.email" aria-describedby="emailHelp" placeholder="Enter email" required>
+      <input type="email" class="form-control" v-model="newUser.email" aria-describedby="emailHelp" placeholder="Email" required>
     </div>
     <div class="form-group">
       <label>Password</label>
