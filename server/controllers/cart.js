@@ -164,20 +164,20 @@ class CartCont {
             .then(cart => {
               checkoutCart = cart
               let promise = []
-              for (let i in cart.products) {
+              for (let i = 0; i < cart.products.length; i++) {
                 promise.push(Product.findById(cart.products[i]))
               }
               return Promise.all(promise)
             })
             .then(data => {
               let promise = []
-              for (let i in data) {
+              for (let i = 0; i < data.length; i++) {
                 data[i].stock -= checkoutCart.quantity[i]
                 promise.push(data[i].save())
               }
               return Promise.all(promise)
             })
-            .then(data => {
+            .then(cart => {
               res.status(200).json(checkoutCart)
             })
             .catch(next) 

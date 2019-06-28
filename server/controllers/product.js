@@ -9,9 +9,32 @@ class ProductCont {
     let newProduct = {
       name: req.body.name,
       desc: req.body.desc,
-      price: parseInt(req.body.price),
-      stock: parseInt(req.body.stock)
     }
+    if (!req.body.price) {
+      next({
+        code: 400,
+        message: 'Product must have a price!'
+      })
+    }
+    if (typeof req.body.price == 'string' || typeof req.body.price == 'number') {
+      newProduct.price = parseInt(req.body.price)
+    } else {
+      next({
+        code: 400,
+        message: 'Product price must be a number!'
+      })
+    }
+    if (!req.body.stock) {
+      newProduct.stock = 0
+    } else if (typeof req.body.stock == 'string' || typeof req.body.stock == 'number') {
+      newProduct.stock = parseInt(req.body.stock)
+    } else {
+      next({
+        code: 400,
+        message: 'Product stock must be a number!'
+      })
+    }
+    
     if (req.file) {
       newProduct.image = req.file.gcsUrl
     } else {
@@ -26,30 +49,13 @@ class ProductCont {
       if (!newProduct.desc) {
         newProduct.desc = ""
       }
-      if (!newProduct.price) {
-        next({
-          code: 400,
-          message: 'Product must be have a price!'
-        })
-      } else if (typeof newProduct.price != 'number') {
-        next({
-          code: 400,
-          message: 'Product price must be a number!'
-        })
-      } else if (newProduct.price < 0) {
+      if (newProduct.price < 0) {
         next({
           code: 400,
           message: 'Product price must be a positive number!'
         })
       } else {
-        if (!newProduct.stock) {
-          newProduct.stock = 0
-        } else if (typeof newProduct.stock != 'number') {
-          next({
-            code: 400,
-            message: 'Product stock must be a number!'
-          })
-        } else if (newProduct.stock < 0) {
+        if (newProduct.stock < 0) {
           next({
             code: 400,
             message: 'Product stock must be a positive number!'
@@ -136,71 +142,75 @@ class ProductCont {
         })
       } else {
         if (product) {
-          if (typeof parseInt(req.body.price) !== "number") {
+          if (typeof req.body.price == 'string' || typeof req.body.price == 'number') {
+            product.price = parseInt(req.body.price)
+          } else {
             next({
               code: 400,
               message: 'Product price must be a number!'
             })
-          } else if (req.body.price < 0) {
+          }
+          if (req.body.price < 0) {
             next({
               code: 400,
               message: 'Product price must be a positive number!'
             })
           } else {
-            if (typeof parseInt(req.body.stock) !== "number") {
+            if (typeof req.body.stock == 'string' || typeof req.body.stock == 'number') {
+              product.stock = parseInt(req.body.stock)
+              if (req.body.stock < 0) {
+                next({
+                  code: 400,
+                  message: 'Product stock must be a positive number!'
+                })
+              } else {
+                product.name = req.body.name
+                if (product.name.length == 0) {
+                  next({
+                    code: 400,
+                    message: 'Product must have a name!'
+                  })
+                }
+                product.desc = req.body.desc
+                const GOOGLE_CLOUD_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID; // Replace with your project ID
+                const GOOGLE_CLOUD_KEYFILE = process.env.GOOGLE_CLOUD_KEYFILE; // Replace with the path to the downloaded private key
+  
+                const storage = new Storage({
+                  projectId: GOOGLE_CLOUD_PROJECT_ID,
+                  keyFilename: GOOGLE_CLOUD_KEYFILE,
+                });
+  
+                const bucketName = process.env.DEFAULT_BUCKET_NAME;
+                if (req.file) {
+                  let deleteFile = product.image
+                  console.log(deleteFile)
+  
+                  product.image = req.file.gcsUrl
+                  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+                    let filename = deleteFile.replace(/(https:\/\/storage.googleapis.com\/my-e-commerce-storage\/)/, '')
+                  }
+                  console.log(filename)
+                  console.log(bucketName)
+                  storage
+                    .bucket(bucketName)
+                    .file(filename)
+                    .delete();
+  
+                  console.log(`gs://${bucketName}/${filename} deleted.`);
+                }
+  
+                let updatedProduct = product
+                product.save()
+                  .then(() => {
+                    res.status(200).json(updatedProduct)
+                  })
+                  .catch(next)
+              }
+            } else {
               next({
                 code: 400,
                 message: 'Product stock must be a number!'
               })
-            } else if (req.body.stock < 0) {
-              next({
-                code: 400,
-                message: 'Product stock must be a positive number!'
-              })
-            } else {
-              product.name = req.body.name
-              if (product.name.length == 0) {
-                next({
-                  code: 400,
-                  message: 'Product must have a name!'
-                })
-              }
-              product.desc = req.body.desc
-              product.price = parseInt(req.body.price)
-              product.stock = parseInt(req.body.stock)
-              const GOOGLE_CLOUD_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID; // Replace with your project ID
-              const GOOGLE_CLOUD_KEYFILE = process.env.GOOGLE_CLOUD_KEYFILE; // Replace with the path to the downloaded private key
-
-              const storage = new Storage({
-                projectId: GOOGLE_CLOUD_PROJECT_ID,
-                keyFilename: GOOGLE_CLOUD_KEYFILE,
-              });
-
-              const bucketName = process.env.DEFAULT_BUCKET_NAME;
-              if (req.file) {
-                let deleteFile = product.image
-                console.log(deleteFile)
-
-                product.image = req.file.gcsUrl
-                if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
-                  let filename = deleteFile.replace(/(https:\/\/storage.googleapis.com\/my-e-commerce-storage\/)/, '')
-                }
-                console.log(filename)
-                console.log(bucketName)
-                storage
-                  .bucket(bucketName)
-                  .file(filename)
-                  .delete();
-
-                console.log(`gs://${bucketName}/${filename} deleted.`);
-              }
-
-              let updatedProduct = product
-              product.save()
-                .then(() => {
-                  res.status(200).json(updatedProduct)
-                })
-                .catch(next)
             }
           }
         } else {

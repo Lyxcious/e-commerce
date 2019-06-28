@@ -166,7 +166,7 @@ describe('Testing Product Server Endpoint', function () {
               stock: 500
             })
             .then(res => {
-              res.body.message.should.equal('Product must be have a price!')
+              res.body.message.should.equal('Product must have a price!')
               res.should.have.status(400)
               done()
             })
@@ -579,6 +579,7 @@ describe('Testing Product Server Endpoint', function () {
             })
             .set('access_token', `${accessToken}`)
             .then(res => {
+              console.log(res.body)
               res.body.message.should.equal('Product stock must be a positive number!')
               res.should.have.status(400)
               done()
@@ -601,6 +602,7 @@ describe('Testing Product Server Endpoint', function () {
             })
             .set('access_token', `${accessToken}`)
             .then(res => {
+              console.log(res.body)
               res.body.message.should.equal('Product stock must be a number!')
               res.should.have.status(400)
               done()

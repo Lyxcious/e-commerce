@@ -40,4 +40,5 @@ app.use(error)
 
 app.listen(port, () => {console.log('listening to port', port)})
 
+// uncomment for testing!
 // module.exports = app
