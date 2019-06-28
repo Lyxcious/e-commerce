@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
       } else
         next({
           code: 404,
-          message: 'Cart not found!'
+          message: `Cart with id ${req.params.id} not found!`
         })
     })
     .catch(next)

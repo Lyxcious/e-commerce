@@ -420,7 +420,7 @@ describe('Testing Cart Server Endpoint', function () {
         })
       })
       describe(`Fail update cart with wrong cart id`, function () {
-        it(`Should return an error with status code 404 and message: "Cart not found!"`, function (done) {
+        it(`Should return an error with status code 404 and message: "Cart with id 5d0cebd686ef401a48b134dd not found!"`, function (done) {
           chai
             .request(app)
             .patch(`/cart/update/5d0cebd686ef401a48b134dd`)
@@ -432,7 +432,7 @@ describe('Testing Cart Server Endpoint', function () {
               'access_token': accessTokenNonAdmin
             })
             .then(res => {
-              res.body.message.should.equal(`Cart not found!`)
+              res.body.message.should.equal(`Cart with id 5d0cebd686ef401a48b134dd not found!`)
               res.should.have.status(404)
               done()
             })
@@ -574,7 +574,7 @@ describe('Testing Cart Server Endpoint', function () {
         })
       })
       describe(`Fail checkout cart with wrong cart id`, function () {
-        it(`Should return an error with status code 404 and message: "Cart not found!"`, function (done) {
+        it(`Should return an error with status code 404 and message: "Cart with id 5d0cebd686ef401a48b134dd not found!"`, function (done) {
           chai
             .request(app)
             .patch(`/cart/checkout/5d0cebd686ef401a48b134dd`)
@@ -588,7 +588,7 @@ describe('Testing Cart Server Endpoint', function () {
               'access_token': accessTokenNonAdmin
             })
             .then(res => {
-              res.body.message.should.equal(`Cart not found!`)
+              res.body.message.should.equal(`Cart with id 5d0cebd686ef401a48b134dd not found!`)
               res.should.have.status(404)
               done()
             })

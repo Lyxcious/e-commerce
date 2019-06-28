@@ -159,6 +159,12 @@ class ProductCont {
               })
             } else {
               product.name = req.body.name
+              if (product.name.length == 0) {
+                next({
+                  code: 400,
+                  message: 'Product must have a name!'
+                })
+              }
               product.desc = req.body.desc
               product.price = parseInt(req.body.price)
               product.stock = parseInt(req.body.stock)

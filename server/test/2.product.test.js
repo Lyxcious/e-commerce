@@ -478,6 +478,28 @@ describe('Testing Product Server Endpoint', function () {
             })
         })
       })
+      describe('Fail update product with product name an empty string', function () {
+        it('Should return an error with status code 400 and message: "Product must have a name!"', function (done) {
+          chai
+            .request(app)
+            .patch(`/product/update/${idProduct}`)
+            .set('access_token', `${accessToken}`)
+            .send({
+              name: '',
+              desc: 'Product desc testing update',
+              price: 200000,
+              stock: 50
+            })
+            .then(res => {
+              res.body.message.should.equal('Product must have a name!')
+              res.should.have.status(400)
+              done()
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        })
+      })
       describe('Fail update product detail with wrong id', function () {
         it('Should return an error with status code 404 and message: "Product with id 5d0cebd686ef101a48b134dd not found!"', function (done) {
           chai

@@ -106,7 +106,7 @@ class CartCont {
         } else {
           next({
             code: 404,
-            message: `cart with id ${req.params.id} not found!`
+            message: `Cart with id ${req.params.id} not found!`
           })
         }
       }
@@ -183,7 +183,7 @@ class CartCont {
             .catch(next) 
           }
         } else {
-          next({code: 404, message: 'Cart not found!'})
+          next({code: 404, message: `Cart with id ${req.params.id} not found!`})
         }
       }
     })
