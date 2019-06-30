@@ -1,11 +1,14 @@
 <template>
   <div>
-    <b-card-group columns style="column-count: 5">
-      <b-card v-for="product in products" :title="product.name" :img-src="product.image" :img-alt="product.name" img-top img-height="300" :key="product.id" style="text-align: left" class="d-flex flex-column justify-content-between">
-        <b-card-text v-html="product.desc">
+    <b-card-group columns style="column-count: 4">
+      <b-card v-for="product in products" :img-src="product.image" :img-alt="product.name" img-top img-height="300" :key="product.id" style="text-align: left; font-size: 16px" class="d-flex flex-column justify-content-between" >
+        <b-card-text style="font-size: 18px; font-weight: 600">
+          {{product.name}}
+        </b-card-text>
+        <b-card-text v-html="product.desc" style="font-size: 14px">
           Description: {{product.desc}}
         </b-card-text>
-        <b-card-text>
+        <b-card-text style="font-size: 14px">
           Price: Rp {{formating(product.price)}}
         </b-card-text>
         <b-card-text v-if="product.stock > 0">
