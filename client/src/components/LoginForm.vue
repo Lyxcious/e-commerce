@@ -75,7 +75,7 @@ export default {
           })
           ax({
             method: 'post',
-            url: 'cart/create',
+            url: '/cart/create',
             headers: { access_token: data.access_token }
           })
             .then(({ data }) => {
@@ -87,7 +87,7 @@ export default {
               if (err.response) {
                 ax({
                   method: 'get',
-                  url: 'cart/detail',
+                  url: '/cart/detail',
                   headers: { access_token: localStorage.getItem('token') }
                 })
                   .then(({ data }) => {
@@ -135,7 +135,7 @@ export default {
             })
             ax({
               method: 'post',
-              url: 'cart/create',
+              url: '/cart/create',
               headers: { access_token: data.access_token }
             })
               .then(({ data }) => {
@@ -147,7 +147,7 @@ export default {
                 if (err.response) {
                   ax({
                     method: 'get',
-                    url: 'cart/detail',
+                    url: '/cart/detail',
                     headers: { access_token: localStorage.getItem('token') }
                   })
                     .then(({ data }) => {

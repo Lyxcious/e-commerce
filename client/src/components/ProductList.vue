@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <b-card-group columns style="column-count: 4">
-      <b-card v-for="product in products" :img-src="product.image" :img-alt="product.name" img-top img-height="300" :key="product.id" style="text-align: left; font-size: 16px" class="d-flex flex-column justify-content-between" >
+  <div class="d-flex flex-wrap justify-content-center">
+    <b-card-group v-for="product in products" :key="product.id" style="width: 300px" class="mr-3 mb-3">
+      <b-card :img-src="product.image" :img-alt="product.name" img-top img-height="300" style="text-align: left; font-size: 16px" class="d-flex flex-column justify-content-between" >
         <b-card-text style="font-size: 18px; font-weight: 600">
           {{product.name}}
         </b-card-text>
@@ -18,7 +18,7 @@
           Stock: Habis
         </b-card-text>
         <div slot="footer" class="text-center">
-          <b-button href="#" variant="primary" v-if="user.email != 'admin@admin.com'" @click="addToCart(product._id)">Add to Cart</b-button>
+          <b-button href="#" variant="primary" v-if="user.email != 'admin@admin.com'" @click="addToCart(product._id, product.stock)">Add to Cart</b-button>
           <b-button href="#" variant="success" v-if="user.email == 'admin@admin.com'" @click="editProduct(product._id)" class="mr-2">Edit</b-button>
           <b-button href="#" variant="danger" v-if="user.email == 'admin@admin.com'" @click="deleteProduct(product._id)">Delete</b-button>
         </div>
@@ -56,8 +56,17 @@ export default {
     editProduct (id) {
       this.$router.push({ path: `/product/edit/${id}` })
     },
-    addToCart (id) {
-      this.$emit('addToCart', id)
+    addToCart (id, stock) {
+      if (stock > 0) {
+        this.$emit('addToCart', id)
+      } else {
+        this.$swal({
+          type: 'error',
+          title: 'Product Sold Out!',
+          showConfirmButton: false,
+          timer: 3000
+        })
+      }
     }
   }
 }

@@ -3,7 +3,7 @@
     <CartList style="overflow-y: scroll" :cart="carts"/>
     <div>
       <hr/>
-      <b-button href="/" variant="success" @click="checkOut">Check Out</b-button>
+      <b-button variant="success" @click="checkOut">Check Out</b-button>
     </div>
   </div>
 </template>
@@ -69,19 +69,13 @@ export default {
         this.totalSpent += this.carts.totalPrice[i]
       }
       if (this.totalSpent !== 0) {
-        this.$swal({
-          type: 'success',
-          title: 'Thank You for Your Purchase',
-          text: `You spent: Rp ${this.formating(this.totalSpent)}`,
-          showConfirmButton: true
-        })
         let productId = []
         this.carts.products.forEach(product => {
           productId.push(product._id)
         })
         ax({
           method: 'patch',
-          url: `cart/checkout/${localStorage.getItem('cart')}`,
+          url: `/cart/checkout/${localStorage.getItem('cart')}`,
           data: {
             products: productId,
             quantity: this.carts.quantity
@@ -89,15 +83,24 @@ export default {
           headers: { access_token: localStorage.getItem('token') }
         })
           .then(({ data }) => {
+            console.log(data)
             localStorage.removeItem('cart')
             return ax({
               method: 'post',
-              url: 'cart/create',
-              headers: { access_token: data.access_token }
+              url: '/cart/create',
+              headers: { access_token: localStorage.getItem('token') }
             })
           })
-          .then(data => {
+          .then(({data}) => {
             localStorage.setItem('cart', data._id)
+            this.$swal({
+              type: 'success',
+              title: 'Thank You for Your Purchase',
+              text: `You spent: Rp ${this.formating(this.totalSpent)}`,
+              showConfirmButton: true
+            })
+            this.$emit('emptyCart')
+            this.$router.push('/')
           })
           .catch(err => {
             console.log(err)

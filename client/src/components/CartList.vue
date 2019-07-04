@@ -51,7 +51,7 @@ export default {
       })
       ax({
         method: 'patch',
-        url: `cart/update/${localStorage.getItem('cart')}`,
+        url: `/cart/update/${localStorage.getItem('cart')}`,
         data: {
           products: productId,
           quantity: this.carts.quantity
@@ -75,7 +75,7 @@ export default {
       })
       ax({
         method: 'patch',
-        url: `cart/update/${localStorage.getItem('cart')}`,
+        url: `/cart/update/${localStorage.getItem('cart')}`,
         data: {
           products: productId,
           quantity: this.carts.quantity

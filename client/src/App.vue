@@ -4,7 +4,7 @@
       <NavBar :isLogin='isLogin' :user="userLogin" @logout="logout"/>
       <NavBarProduct :product="product" v-if="userLogin.email == 'admin@admin.com' && ($route.name == 'product-edit' || $route.name == 'product-add' || $route.name == 'product')"/>
     </div>
-    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin" @addToCart="addToCart" @updateCart="updateCart"/>
+    <router-view class="flex-grow-1" @loginData="loginData" :isLogin="isLogin" :user="userLogin" @addToCart="addToCart" @updateCart="updateCart" @emptyCart="emptyCart"/>
     <Footer/>
   </div>
 </template>
@@ -143,6 +143,10 @@ export default {
     },
     updateCart (productIds) {
       this.cart = productIds
+    },
+    emptyCart () {
+      this.cartProduct = []
+      this.cartProductQ = []
     }
   }
 }
