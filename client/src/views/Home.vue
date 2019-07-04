@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <ProductFilter :sort="sort" :nameFilter="nameFilter" class="form" @getAll="getAll" @sortPrice="sortPrice" @filterByName="filterByName"/>
-    <ProductList :products="products" :user="user" @addToCart="addToCart"/>
+    <ProductList :products="products" :user="user" @addToCart="addToCart" style="margin: 0 auto"/>
   </div>
 </template>
 

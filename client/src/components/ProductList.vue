@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex flex-wrap justify-content-center">
-    <b-card-group v-for="product in products" :key="product.id" style="width: 300px" class="mr-3 mb-3">
+  <div class="d-flex flex-wrap justify-content-start">
+    <b-card-group v-for="product in products" :key="product.id" style="width: 350px" class="mr-3 mb-3">
       <b-card :img-src="product.image" :img-alt="product.name" img-top img-height="300" style="text-align: left; font-size: 16px" class="d-flex flex-column justify-content-between" >
         <b-card-text style="font-size: 18px; font-weight: 600">
           {{product.name}}
@@ -57,15 +57,19 @@ export default {
       this.$router.push({ path: `/product/edit/${id}` })
     },
     addToCart (id, stock) {
-      if (stock > 0) {
-        this.$emit('addToCart', id)
+      if (localStorage.getItem('token')) {
+        if (stock > 0) {
+          this.$emit('addToCart', id)
+        } else {
+          this.$swal({
+            type: 'error',
+            title: 'Product Sold Out!',
+            showConfirmButton: false,
+            timer: 3000
+          })
+        }
       } else {
-        this.$swal({
-          type: 'error',
-          title: 'Product Sold Out!',
-          showConfirmButton: false,
-          timer: 3000
-        })
+        this.$router.push('/login')
       }
     }
   }

@@ -91,7 +91,7 @@ export default {
               headers: { access_token: localStorage.getItem('token') }
             })
           })
-          .then(({data}) => {
+          .then(({ data }) => {
             localStorage.setItem('cart', data._id)
             this.$swal({
               type: 'success',
